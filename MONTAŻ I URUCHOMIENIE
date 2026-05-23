@@ -1,0 +1,365 @@
+# INSTRUKCJA MONTAŻU DLA BYSTRZAKÓW
+
+Ten plik prowadzi krok po kroku przez uruchomienie prostego metronomu na Arduino. Instrukcja jest napisana możliwie prosto, tak aby dało się przejść cały proces od instalacji programu do podłączenia ostatniego kabelka.
+
+Projekt dotyczy metronomu z wyświetlaczem LCD 16x2 I2C, enkoderem, dwoma przyciskami oraz dwiema diodami LED.
+
+---
+
+## 1. Co będzie potrzebne
+
+Przygotuj:
+
+1. Arduino Uno albo Arduino Nano.
+2. Kabel USB do podłączenia Arduino do komputera.
+3. Wyświetlacz LCD 16x2 z konwerterem I2C.
+4. Enkoder obrotowy, np. KY-040.
+5. Dwa przyciski tact-switch.
+6. Dwie diody LED:
+   - zielona do zwykłych uderzeń,
+   - czerwona do akcentu.
+7. Dwa rezystory 220 Ohm do diod LED.
+8. Płytka stykowa.
+9. Przewody połączeniowe.
+10. Komputer z Arduino IDE.
+
+---
+
+## 2. Zainstaluj środowisko Arduino IDE
+
+1. Wejdź na stronę Arduino.
+2. Pobierz program **Arduino IDE**.
+3. Zainstaluj go na komputerze.
+4. Uruchom Arduino IDE.
+
+Uwaga: w nazwie chodzi o **Arduino IDE**, nie „artofino”. To jest program, w którym wgrywa się kod do płytki Arduino.
+
+---
+
+## 3. Podłącz Arduino do komputera
+
+1. Podłącz Arduino do komputera kablem USB.
+2. Poczekaj chwilę, aż komputer wykryje płytkę.
+3. Otwórz Arduino IDE.
+4. Wybierz odpowiednią płytkę:
+   - dla Arduino Uno: **Tools / Narzędzia -> Board / Płytka -> Arduino Uno**,
+   - dla Arduino Nano: **Tools / Narzędzia -> Board / Płytka -> Arduino Nano**.
+5. Wybierz port:
+   - **Tools / Narzędzia -> Port**,
+   - wybierz port, przy którym pojawia się Arduino.
+
+Jeśli nie wiesz, który port wybrać, odłącz Arduino, sprawdź listę portów, podłącz ponownie i zobacz, który port się pojawił.
+
+---
+
+## 4. Zainstaluj potrzebną bibliotekę
+
+Do obsługi wyświetlacza LCD I2C potrzebna jest biblioteka `LiquidCrystal_I2C`.
+
+1. W Arduino IDE wejdź w:
+   **Sketch / Szkic -> Include Library / Dołącz bibliotekę -> Manage Libraries / Zarządzaj bibliotekami**.
+2. Wyszukaj:
+   `LiquidCrystal_I2C`
+3. Zainstaluj bibliotekę autora **Frank de Brabander**.
+4. Biblioteka `Wire.h` jest już wbudowana w Arduino IDE, więc nie trzeba jej osobno instalować.
+
+---
+
+## 5. Wgraj kod do Arduino
+
+1. Otwórz plik z kodem projektu.
+2. Skopiuj kod do Arduino IDE.
+3. Kliknij przycisk **Verify / Sprawdź**, czyli ikonę haczyka.
+4. Jeśli nie ma błędów, kliknij **Upload / Wgraj**, czyli ikonę strzałki.
+5. Poczekaj, aż program zostanie wgrany na płytkę.
+
+Jeśli pojawi się błąd, sprawdź:
+- czy wybrana jest dobra płytka,
+- czy wybrany jest dobry port,
+- czy biblioteka `LiquidCrystal_I2C` jest zainstalowana,
+- czy kabel USB działa poprawnie.
+
+---
+
+## 6. Ważna zasada bezpieczeństwa
+
+Nie eksperymentuj na podłączonej płytce.
+
+Przed zmianą połączeń:
+
+1. Odłącz Arduino od USB.
+2. Zmień przewody.
+3. Sprawdź połączenia.
+4. Dopiero wtedy ponownie podłącz Arduino do komputera.
+
+Nie przekładaj kabli „na żywo”, jeśli nie masz pewności, co robisz. Można przez przypadek zrobić zwarcie albo uszkodzić płytkę, diodę, wyświetlacz lub port USB.
+
+---
+
+# 7. Podłączenie krok po kroku
+
+Najlepiej podłączać elementy po kolei. Nie zaczynaj od wszystkich przewodów naraz.
+
+---
+
+## Krok 1. Podłącz zasilanie na płytce stykowej
+
+1. Pin **5V** z Arduino podłącz do czerwonej linii zasilania na płytce stykowej.
+2. Pin **GND** z Arduino podłącz do niebieskiej lub czarnej linii masy na płytce stykowej.
+
+Od teraz:
+- czerwona linia oznacza **5V**,
+- niebieska lub czarna linia oznacza **GND**.
+
+---
+
+## Krok 2. Podłącz wyświetlacz LCD 16x2 I2C
+
+Wyświetlacz LCD I2C ma zwykle cztery piny:
+
+- GND
+- VCC
+- SDA
+- SCL
+
+Podłącz je tak:
+
+1. **GND** z LCD -> GND na płytce stykowej.
+2. **VCC** z LCD -> 5V na płytce stykowej.
+3. **SDA** z LCD -> pin **A4** w Arduino Uno.
+4. **SCL** z LCD -> pin **A5** w Arduino Uno.
+
+Dla Arduino Uno:
+- SDA to A4,
+- SCL to A5.
+
+Po podłączeniu i uruchomieniu programu ekran powinien się zaświecić. Jeśli świeci, ale nic nie pokazuje, spróbuj delikatnie przekręcić mały potencjometr na module I2C przy wyświetlaczu. To regulacja kontrastu.
+
+---
+
+## Krok 3. Podłącz enkoder obrotowy
+
+Enkoder KY-040 ma zwykle piny:
+
+- CLK
+- DT
+- SW
+- +
+- GND
+
+Podłącz je tak:
+
+1. **CLK** -> pin **D2** Arduino.
+2. **DT** -> pin **D3** Arduino.
+3. **SW** -> pin **D4** Arduino.
+4. **+ / VCC** -> 5V na płytce stykowej.
+5. **GND** -> GND na płytce stykowej.
+
+Enkoder służy do zmiany wartości oraz przełączania trybów menu. Obrót zmienia ustawienia, a naciśnięcie gałki przełącza aktywną opcję.
+
+---
+
+## Krok 4. Podłącz przycisk PLAY/STOP
+
+Przycisk PLAY/STOP działa jak przełącznik uruchamiania i zatrzymywania metronomu.
+
+Podłącz go tak:
+
+1. Jedną nóżkę przycisku podłącz do pinu **D5** Arduino.
+2. Drugą nóżkę przycisku podłącz do **GND**.
+
+Nie trzeba dodawać osobnego rezystora, ponieważ kod korzysta z `INPUT_PULLUP`.
+
+Ważne: jeśli używasz przycisku tact-switch z czterema nóżkami, upewnij się, że przewody są po przeciwnych stronach przycisku, a nie po tej samej stronie.
+
+---
+
+## Krok 5. Podłącz przycisk RESET
+
+Przycisk RESET w tym projekcie nie resetuje całej płytki Arduino. Służy do powrotu metronomu do pierwszego uderzenia taktu, czyli do akcentu.
+
+Podłącz go tak:
+
+1. Jedną nóżkę przycisku podłącz do pinu **D6** Arduino.
+2. Drugą nóżkę przycisku podłącz do **GND**.
+
+Ten przycisk działa tylko jako reset rytmu w programie.
+
+---
+
+## Krok 6. Podłącz zieloną diodę LED tempa
+
+Zielona dioda pokazuje zwykłe uderzenia metronomu.
+
+Dioda LED ma dwie nóżki:
+
+- dłuższa nóżka to **anoda**, czyli plus,
+- krótsza nóżka to **katoda**, czyli minus.
+
+Podłącz ją tak:
+
+1. Dłuższą nóżkę zielonej diody podłącz do pinu **D7** Arduino.
+2. Krótszą nóżkę zielonej diody podłącz do rezystora **220 Ohm**.
+3. Drugi koniec rezystora podłącz do **GND**.
+
+Czyli połączenie wygląda tak:
+
+`D7 -> dłuższa nóżka LED -> krótsza nóżka LED -> rezystor 220 Ohm -> GND`
+
+---
+
+## Krok 7. Podłącz czerwoną diodę LED akcentu
+
+Czerwona dioda pokazuje pierwsze uderzenie w takcie, czyli akcent.
+
+Podłącz ją tak:
+
+1. Dłuższą nóżkę czerwonej diody podłącz do pinu **D8** Arduino.
+2. Krótszą nóżkę czerwonej diody podłącz do rezystora **220 Ohm**.
+3. Drugi koniec rezystora podłącz do **GND**.
+
+Czyli połączenie wygląda tak:
+
+`D8 -> dłuższa nóżka LED -> krótsza nóżka LED -> rezystor 220 Ohm -> GND`
+
+---
+
+# 8. Pełna lista połączeń
+
+## Enkoder obrotowy
+
+- CLK -> D2
+- DT -> D3
+- SW -> D4
+- VCC / + -> 5V
+- GND -> GND
+
+## Przycisk PLAY/STOP
+
+- jedna nóżka -> D5
+- druga nóżka -> GND
+
+## Przycisk RESET
+
+- jedna nóżka -> D6
+- druga nóżka -> GND
+
+## LED zielona, tempo
+
+- anoda, dłuższa nóżka -> D7
+- katoda, krótsza nóżka -> rezystor 220 Ohm -> GND
+
+## LED czerwona, akcent
+
+- anoda, dłuższa nóżka -> D8
+- katoda, krótsza nóżka -> rezystor 220 Ohm -> GND
+
+## LCD 16x2 I2C
+
+- SDA -> A4
+- SCL -> A5
+- VCC -> 5V
+- GND -> GND
+
+---
+
+# 9. Pierwsze uruchomienie
+
+Po podłączeniu wszystkiego:
+
+1. Sprawdź jeszcze raz wszystkie przewody.
+2. Upewnij się, że 5V nie jest połączone bezpośrednio z GND.
+3. Podłącz Arduino do komputera.
+4. Wgraj kod.
+5. Sprawdź wyświetlacz.
+6. Naciśnij PLAY/STOP.
+7. Sprawdź, czy diody migają.
+8. Obróć enkoder i zobacz, czy zmieniają się wartości.
+9. Naciśnij enkoder i sprawdź, czy zmienia się aktywny tryb edycji.
+10. Naciśnij RESET podczas pracy metronomu i sprawdź, czy wraca akcent.
+
+---
+
+# 10. Co zrobić, jeśli coś nie działa
+
+## Ekran LCD świeci, ale nic nie pokazuje
+
+Możliwe przyczyny:
+
+- zły adres I2C,
+- źle ustawiony kontrast,
+- pomylone przewody SDA i SCL,
+- brak zasilania wyświetlacza.
+
+Co sprawdzić:
+
+1. Pokręć potencjometrem kontrastu na module I2C.
+2. Sprawdź, czy SDA jest podłączone do A4.
+3. Sprawdź, czy SCL jest podłączone do A5.
+4. Spróbuj zmienić adres I2C w kodzie z `0x27` na `0x3F`.
+
+---
+
+## Enkoder działa odwrotnie
+
+Jeśli obrót w prawo zmniejsza wartość, a w lewo zwiększa, można zamienić przewody:
+
+- CLK,
+- DT.
+
+Można też poprawić to w kodzie.
+
+---
+
+## Przycisk nie działa
+
+Sprawdź:
+
+1. Czy jedna nóżka idzie do pinu Arduino.
+2. Czy druga nóżka idzie do GND.
+3. Czy przewody nie są wpięte po tej samej stronie przycisku.
+4. Czy w kodzie pin jest ustawiony jako `INPUT_PULLUP`.
+
+---
+
+## Dioda LED nie świeci
+
+Sprawdź:
+
+1. Czy dłuższa nóżka diody jest podłączona do pinu Arduino.
+2. Czy krótsza nóżka idzie przez rezystor do GND.
+3. Czy rezystor ma około 220 Ohm.
+4. Czy dioda nie jest włożona odwrotnie.
+5. Czy wybrany pin zgadza się z kodem.
+
+---
+
+## Kod się nie wgrywa
+
+Sprawdź:
+
+1. Czy Arduino jest podłączone do komputera.
+2. Czy wybrano dobrą płytkę.
+3. Czy wybrano dobry port.
+4. Czy kabel USB obsługuje transmisję danych, a nie tylko ładowanie.
+5. Czy biblioteka `LiquidCrystal_I2C` została zainstalowana.
+
+---
+
+# 11. Najważniejsze zasady
+
+1. Nie przekładaj przewodów na podłączonej płytce.
+2. Zawsze sprawdzaj, gdzie jest 5V, a gdzie GND.
+3. Diody LED podłączaj przez rezystory.
+4. Przyciski i enkoder w tym projekcie działają przez zwarcie pinu do GND.
+5. Nie dodawaj losowych elementów bez sprawdzenia schematu.
+6. Najpierw uruchom podstawową wersję, dopiero potem eksperymentuj.
+7. Jeśli coś nie działa, sprawdzaj połączenia od początku, kabel po kabelku.
+
+---
+
+# 12. Podsumowanie
+
+Po wykonaniu wszystkich kroków powinien działać prosty metronom na Arduino. Tempo i metrum można zmieniać enkoderem, przycisk PLAY/STOP uruchamia i zatrzymuje odliczanie, a przycisk RESET przywraca pierwsze uderzenie taktu.
+
+Zielona dioda pokazuje zwykłe uderzenia, a czerwona dioda pokazuje akcent na pierwszą miarę taktu.
